@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>اوف اح</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Changa:wght@400;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css?v=20260508b" />
+  </head>
+  <body>
+    <div id="js-error" style="display:none;position:fixed;top:0;left:0;right:0;background:#c00;color:#fff;padding:12px 16px;font:14px monospace;z-index:9999;white-space:pre-wrap;"></div>
+    <script>
+      window.onerror = function(msg, src, line, col, err) {
+        var el = document.getElementById('js-error');
+        el.textContent = 'JS ERROR: ' + msg + '\n' + (src||'') + ':' + line;
+        el.style.display = 'block';
+      };
+      window.addEventListener('unhandledrejection', function(e) {
+        var el = document.getElementById('js-error');
+        el.textContent = 'PROMISE ERROR: ' + (e.reason || e);
+        el.style.display = 'block';
+      });
+    </script>
+    <main class="game-shell">
+      <div id="game"></div>
+    </main>
+
+    <section id="mobile-play-panel" class="mobile-play-panel" aria-hidden="true">
+      <div class="mobile-stats-grid">
+        <article class="mobile-card">
+          <span id="mobile-stage-label" class="mobile-card__label">المرحلة</span>
+          <strong id="mobile-stage" class="mobile-card__value">1 - 1</strong>
+        </article>
+
+        <article class="mobile-card">
+          <span id="mobile-time-label" class="mobile-card__label">الوقت</span>
+          <strong id="mobile-time" class="mobile-card__value">00:00</strong>
+        </article>
+
+        <article class="mobile-card">
+          <span id="mobile-cups-label" class="mobile-card__label">الأكواب</span>
+          <strong id="mobile-cups" class="mobile-card__value">0 / 10</strong>
+        </article>
+
+        <article class="mobile-card">
+          <span id="mobile-health-label" class="mobile-card__label">الصحة</span>
+          <strong id="mobile-health" class="mobile-card__value mobile-card__value--hearts">
+            ♥ ♥ ♡
+          </strong>
+        </article>
+
+        <article class="mobile-card mobile-card--wide">
+          <div class="mobile-card__head">
+            <span id="mobile-mission-title" class="mobile-card__label">المهمة</span>
+            <strong id="mobile-mission-count" class="mobile-card__value mobile-card__value--small">
+              0 / 10
+            </strong>
+          </div>
+          <span id="mobile-mission-label" class="mobile-card__subvalue">اجمع 10 أكواب</span>
+          <div class="mobile-mission-track">
+            <div id="mobile-mission-fill" class="mobile-mission-fill"></div>
+          </div>
+        </article>
+      </div>
+
+      <div class="mobile-controls" dir="ltr">
+        <div class="mc-dpad">
+          <button id="mobile-left" class="mc-dir" type="button" aria-label="Move left">◀</button>
+          <div class="mc-dpad-dot" aria-hidden="true"></div>
+          <button id="mobile-right" class="mc-dir" type="button" aria-label="Move right">▶</button>
+        </div>
+        <div class="mc-actions">
+          <div class="mc-action-col">
+            <span class="mc-label">قفز</span>
+            <button id="mobile-jump" class="mc-act mc-act--jump" type="button" aria-label="Jump">▲</button>
+          </div>
+          <div class="mc-action-col">
+            <span class="mc-label">طلق</span>
+            <button id="mobile-shoot" class="mc-act mc-act--shoot" type="button" aria-label="Shoot">●</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      (function () {
+        const PHASER_REMOTE_URL = "https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.min.js";
+        const PHASER_CACHE_KEY = "phaser-3.70.0-cache";
+        const cachedPhaser = localStorage.getItem(PHASER_CACHE_KEY);
+
+        if (cachedPhaser) {
+          window.__phaserSource = "local-cache";
+          document.write(`<script>${cachedPhaser.replace(/<\/script/gi, "<\\/script")}<\/script>`);
+          return;
+        }
+
+        window.__phaserSource = "remote";
+        document.write(`<script src="${PHASER_REMOTE_URL}"><\/script>`);
+      })();
+    </script>
+    <!-- Lobby overlay -->
+    <div id="lobby-overlay" class="lobby-overlay" aria-hidden="true">
+      <button id="lobby-btn-back" class="lobby-btn-back" title="Go back" aria-label="Go back">◀</button>
+
+      <div id="lobby-screen-intro" class="lobby-screen">
+        <div class="lobby-card">
+          <h2 class="lobby-title">اللعب الجماعي</h2>
+          <p class="lobby-subtitle">العب مع أصدقائك!</p>
+          <div class="lobby-field">
+            <label class="lobby-label">اسمك في اللعبة</label>
+            <input id="lobby-nick" class="lobby-input" type="text" maxlength="14" placeholder="أدخل اسمك" dir="rtl" autocomplete="off">
+          </div>
+          <button id="lobby-btn-create" class="lobby-btn lobby-btn--primary">إنشاء غرفة جديدة</button>
+          <div class="lobby-sep">أو انضم لغرفة موجودة</div>
+          <div class="lobby-join-row">
+            <input id="lobby-code-field" class="lobby-input lobby-input--code" type="text" maxlength="4" placeholder="ABCD" dir="ltr" autocomplete="off">
+            <button id="lobby-btn-join" class="lobby-btn">انضم</button>
+          </div>
+          <p id="lobby-error" class="lobby-error" aria-live="polite"></p>
+        </div>
+      </div>
+
+      <div id="lobby-screen-waiting" class="lobby-screen" style="display:none">
+        <div class="lobby-card lobby-card--wide">
+          <div class="lobby-code-banner">
+            <span class="lobby-code-label">كود الغرفة</span>
+            <strong id="lobby-code-display" class="lobby-code-value">----</strong>
+            <button id="lobby-copy-code" class="lobby-copy-btn" title="نسخ الكود">📋</button>
+          </div>
+          <div id="lobby-players-list" class="lobby-players-list"></div>
+          <div class="lobby-actions">
+            <button id="lobby-btn-ready" class="lobby-btn lobby-btn--ready">جاهز ✓</button>
+            <button id="lobby-btn-start" class="lobby-btn lobby-btn--start" style="display:none">ابدأ اللعبة ▶</button>
+          </div>
+          <p class="lobby-hint">شارك الكود مع أصدقائك للانضمام</p>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script src="main.js?v=20260508b"></script>
+    <script>
+      (function () {
+        const PHASER_REMOTE_URL = "https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.min.js";
+        const PHASER_CACHE_KEY = "phaser-3.70.0-cache";
+
+        window.__cachePhaserFromBrowserCache = function () {
+          if (localStorage.getItem(PHASER_CACHE_KEY)) {
+            window.__phaserCacheStatus = "ready";
+            return Promise.resolve("ready");
+          }
+
+          window.__phaserCacheStatus = "pending";
+          return fetch(PHASER_REMOTE_URL, { cache: "force-cache", mode: "cors" })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+              }
+              return response.text();
+            })
+            .then((source) => {
+              if (!source || !source.includes("Phaser")) {
+                throw new Error("invalid phaser payload");
+              }
+
+              localStorage.setItem(PHASER_CACHE_KEY, source);
+              window.__phaserCacheStatus = "ok";
+              return "ok";
+            })
+            .catch((error) => {
+              window.__phaserCacheStatus = `error:${error.message}`;
+              throw error;
+            });
+        };
+
+        window.addEventListener("load", () => {
+          if (window.__phaserSource === "local-cache") {
+            window.__phaserCacheStatus = "ready";
+            return;
+          }
+
+          window.__cachePhaserFromBrowserCache().catch(() => {});
+        });
+      })();
+    </script>
+  </body>
+</html>
