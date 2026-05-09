@@ -1,7 +1,7 @@
 const PORTRAIT = typeof window !== "undefined" && window.innerWidth < 640;
 const GAME_WIDTH = PORTRAIT ? 405 : 1280;
 const GAME_HEIGHT = 720;
-const SERVER_URL = typeof window !== "undefined" ? window.location.origin : "http://localhost:3001";
+const SERVER_URL = window.location.origin;
 
 const mp = {
   socket: null,
@@ -3883,6 +3883,7 @@ class DoraBossScene extends Phaser.Scene {
     this.floor.refreshBody();
     this.floor.setPushable(false);
     this.floor.setImmovable(true);
+    this.floor.setDepth(20);
 
     const playerParts = createGameplayCharacter(
       this,

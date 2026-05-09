@@ -280,6 +280,16 @@ body.mobile-ui-enabled .mobile-play-panel.is-active .mc-topbar {
 }
 
 /* ── Pixel-art mobile controls ── */
+.mobile-controls,
+.mobile-controls *,
+.mc-topbar,
+.mc-exit-btn {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
 .mobile-controls {
   display: flex;
   align-items: center;
@@ -330,6 +340,7 @@ body.mobile-ui-enabled .mobile-play-panel.is-active .mc-topbar {
   background: #0d0622;
   border: 2px solid #2e1460;
   box-shadow: inset 0 3px 6px rgba(0,0,0,0.6);
+  pointer-events: none;
 }
 
 /* Action buttons cluster */
