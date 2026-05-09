@@ -1908,14 +1908,14 @@ class StartScene extends Phaser.Scene {
       bottomFontSize: "96px",
     });
 
-    const previewShadow = this.add.ellipse(GAME_WIDTH / 2, 340, 140, 30, 0x000000, 0.34);
-    this.homePreview = this.add.image(GAME_WIDTH / 2, 210, this.selectedCharacterProfile.previewKey);
-    fitToHeight(this.homePreview, 290);
+    const previewShadow = this.add.ellipse(GAME_WIDTH / 2, 365, 130, 28, 0x000000, 0.34);
+    this.homePreview = this.add.image(GAME_WIDTH / 2, 260, this.selectedCharacterProfile.previewKey);
+    fitToHeight(this.homePreview, 200);
 
     this.homeCharacterNameText = this.add
-      .text(GAME_WIDTH / 2, 348, this.selectedCharacterProfile.character.name, {
+      .text(GAME_WIDTH / 2, 374, this.selectedCharacterProfile.character.name, {
         fontFamily: "Changa",
-        fontSize: "26px",
+        fontSize: "24px",
         fontStyle: "bold",
         color: "#f3eef1",
         stroke: "#160818",
@@ -1925,45 +1925,45 @@ class StartScene extends Phaser.Scene {
 
     this.tweens.add({
       targets: [this.homePreview, previewShadow],
-      y: "-=8",
+      y: "-=7",
       duration: 1100,
       yoyo: true,
       repeat: -1,
       ease: "Sine.inOut",
     });
 
-    this.createMenuButton(this.homeContainer, GAME_WIDTH / 2, 440, 320, 80, "ابدأ اللعبة", {
+    this.createMenuButton(this.homeContainer, GAME_WIDTH / 2, 438, 320, 72, "ابدأ اللعبة", {
       fillColor: 0x100313,
       strokeColor: 0xff1792,
       labelColor: "#ff46ae",
       icon: "▶",
       iconColor: "#ff1792",
-      fontSize: "28px",
-      iconSize: "28px",
+      fontSize: "26px",
+      iconSize: "26px",
       interactiveRegistry: this.homeInteractiveZones,
       onPress: () => this.startSelectedGame("game"),
     });
 
-    this.createMenuButton(this.homeContainer, GAME_WIDTH / 2, 528, 320, 76, "🌐 اللعب الجماعي", {
+    this.createMenuButton(this.homeContainer, GAME_WIDTH / 2, 522, 320, 70, "🌐 اللعب الجماعي", {
       fillColor: 0x130925,
       strokeColor: 0x7e39db,
       labelColor: "#b366ff",
       icon: "👥",
       iconColor: "#7e39db",
-      fontSize: "26px",
-      iconSize: "24px",
+      fontSize: "24px",
+      iconSize: "22px",
       interactiveRegistry: this.homeInteractiveZones,
       onPress: () => this.playOnline(),
     });
 
-    this.createMenuButton(this.homeContainer, GAME_WIDTH / 2, 616, 320, 76, "اختر شخصيتك", {
+    this.createMenuButton(this.homeContainer, GAME_WIDTH / 2, 604, 320, 70, "اختر شخصيتك", {
       fillColor: 0x090914,
       strokeColor: 0xf5f1ee,
       labelColor: "#f5f1ee",
       icon: "◀",
       iconColor: "#f5f1ee",
-      fontSize: "26px",
-      iconSize: "26px",
+      fontSize: "24px",
+      iconSize: "24px",
       interactiveRegistry: this.homeInteractiveZones,
       onPress: () => this.setMenuMode("characters"),
     });
@@ -2349,22 +2349,25 @@ class GameScene extends Phaser.Scene {
     this.physics.world.setBounds(0, 0, WORLD_WIDTH, 1200);
     this.cameras.main.setBounds(0, 0, WORLD_WIDTH, GAME_HEIGHT);
 
+    const _bgW = PORTRAIT ? Math.ceil(GAME_WIDTH / 0.75) : GAME_WIDTH;
+    const _bgH = PORTRAIT ? Math.ceil(GAME_HEIGHT / 0.75) : GAME_HEIGHT;
+
     this.bgFar = this.add
-      .tileSprite(0, 0, GAME_WIDTH, GAME_HEIGHT, "background")
+      .tileSprite(0, 0, _bgW, _bgH, "background")
       .setOrigin(0)
       .setScrollFactor(0)
       .setDepth(-30)
       .setAlpha(0.42);
 
     this.bgMid = this.add
-      .tileSprite(0, 0, GAME_WIDTH, GAME_HEIGHT, "background")
+      .tileSprite(0, 0, _bgW, _bgH, "background")
       .setOrigin(0)
       .setScrollFactor(0)
       .setDepth(-20)
       .setAlpha(0.62);
 
     this.bgNear = this.add
-      .tileSprite(0, 0, GAME_WIDTH, GAME_HEIGHT, "background")
+      .tileSprite(0, 0, _bgW, _bgH, "background")
       .setOrigin(0)
       .setScrollFactor(0)
       .setDepth(-10)
@@ -3066,15 +3069,20 @@ class LolaChaseScene extends Phaser.Scene {
     this.cameras.main.setBounds(0, 0, 220000, GAME_HEIGHT);
     this.cameras.main.setBackgroundColor("#050103");
 
+    const _lbgW = PORTRAIT ? Math.ceil(GAME_WIDTH / 0.75) : GAME_WIDTH;
+    const _lbgH = PORTRAIT ? Math.ceil(GAME_HEIGHT / 0.75) : GAME_HEIGHT;
+    const _lbgCX = _lbgW / 2;
+    const _lbgCY = _lbgH / 2;
+
     const bg = this.add
-      .image(GAME_WIDTH / 2, GAME_HEIGHT / 2, "lola_background")
+      .image(_lbgCX, _lbgCY, "lola_background")
       .setScrollFactor(0)
       .setDepth(-50);
-    coverImage(bg, GAME_WIDTH, GAME_HEIGHT);
+    coverImage(bg, _lbgW, _lbgH);
     bg.setAlpha(0.82);
 
     this.add
-      .rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH, GAME_HEIGHT, 0x030102, 0.5)
+      .rectangle(_lbgCX, _lbgCY, _lbgW, _lbgH, 0x030102, 0.5)
       .setScrollFactor(0)
       .setDepth(-45);
 
@@ -3107,11 +3115,11 @@ class LolaChaseScene extends Phaser.Scene {
     });
 
     this.redGlow = this.add
-      .rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH, GAME_HEIGHT, 0xb10817, 0.08)
+      .rectangle(_lbgCX, _lbgCY, _lbgW, _lbgH, 0xb10817, 0.08)
       .setScrollFactor(0)
       .setDepth(900);
     this.heartbeatOverlay = this.add
-      .rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH, GAME_HEIGHT, 0xff3648, 0)
+      .rectangle(_lbgCX, _lbgCY, _lbgW, _lbgH, 0xff3648, 0)
       .setScrollFactor(0)
       .setDepth(901);
 
@@ -3825,9 +3833,6 @@ class DoraBossScene extends Phaser.Scene {
     this.physics.world.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT + 220);
     this.cameras.main.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
     this.cameras.main.setBackgroundColor("#050106");
-    if (PORTRAIT) {
-      this.cameras.main.setZoom(0.75);
-    }
 
     const bg = this.add.image(GAME_WIDTH / 2, GAME_HEIGHT / 2, "dora_background").setDepth(-50);
     coverImage(bg, GAME_WIDTH, GAME_HEIGHT);
