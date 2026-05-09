@@ -2276,7 +2276,7 @@ class StartScene extends Phaser.Scene {
   refreshStartSceneUi() {
     this.selectedCharacterProfile = getCharacterProfile(this.selectedCharacterId);
     this.homePreview.setTexture(this.selectedCharacterProfile.previewKey);
-    fitToHeight(this.homePreview, 520);
+    fitToHeight(this.homePreview, PORTRAIT ? 200 : 520);
     this.homeCharacterNameText.setText(this.selectedCharacterProfile.character.name);
 
     this.characterCardRefs.forEach(({ characterId, panel, inner, preview, nameText, button }) => {
@@ -5676,8 +5676,8 @@ const config = {
   roundPixels: true,
   scene: [BootScene, StartScene, GameScene, LolaChaseScene, DoraBossScene, ResultScene],
   scale: {
-    mode: Phaser.Scale.FIT,
-    autoCenter: Phaser.Scale.CENTER_BOTH,
+    mode: Phaser.Scale.NONE,
+    autoCenter: Phaser.Scale.NO_CENTER,
   },
   loader: {
     retryAttempts: 0,
