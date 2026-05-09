@@ -250,6 +250,35 @@ body.mobile-ui-enabled .mobile-play-panel.is-active .mobile-stats-grid {
 .mobile-mission-track  { display: none; }
 .mobile-mission-fill   { width: 0%; }
 
+/* ── In-game top bar (exit button) ── */
+.mc-topbar {
+  display: none;
+  justify-content: flex-start;
+  padding: 6px 4px 0;
+}
+
+body.mobile-ui-enabled .mobile-play-panel.is-active .mc-topbar {
+  display: flex;
+}
+
+.mc-exit-btn {
+  background: rgba(8, 4, 22, 0.85);
+  border: 2px solid rgba(126, 57, 219, 0.6);
+  border-radius: 10px;
+  color: #c8a0ff;
+  font-family: "Changa", sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  padding: 5px 14px;
+  cursor: pointer;
+  touch-action: manipulation;
+  line-height: 1;
+}
+
+.mc-exit-btn:active {
+  background: rgba(30, 12, 60, 0.95);
+}
+
 /* ── Pixel-art mobile controls ── */
 .mobile-controls {
   display: flex;

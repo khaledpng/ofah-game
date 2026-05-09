@@ -926,6 +926,27 @@ function setMobilePanelMode(mode = "platformer") {
   refs.panel.classList.toggle("runner-mode", mode === "runner");
 }
 
+function bindInGameExitButton(scene) {
+  const btn = document.getElementById("mobile-exit-game-btn");
+  if (!btn) return;
+  const handler = () => {
+    setMobilePanelVisible(false);
+    mp.enabled = false;
+    scene.scene.start("start");
+  };
+  btn.addEventListener("pointerdown", handler);
+  scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+    btn.removeEventListener("pointerdown", handler);
+  });
+
+  // Desktop: ESC to exit
+  scene.input.keyboard.once("keydown-ESC", () => {
+    setMobilePanelVisible(false);
+    mp.enabled = false;
+    scene.scene.start("start");
+  });
+}
+
 function updateMobilePanelData({
   stageLabel = "المرحلة",
   stageValue = LEVEL_LABEL,
@@ -2317,7 +2338,6 @@ class GameScene extends Phaser.Scene {
     this.hasEnded = false;
     this.collectedTea = 0;
     this.characterProfile = getCharacterProfile(data.selectedCharacterId);
-    playSceneMusic(this, "stage1");
     setMobileUiBodyMode();
     setMobilePanelMode("platformer");
     this.useMobileUi = shouldUseMobileUi();
@@ -2420,6 +2440,7 @@ class GameScene extends Phaser.Scene {
       this.createHud();
     }
     this.updateHud();
+    bindInGameExitButton(this);
 
     // Initialize multiplayer if enabled
     this.remotePlayers = new Map();
@@ -3026,6 +3047,7 @@ class LolaChaseScene extends Phaser.Scene {
       setMobilePanelMode("platformer");
       setMobilePanelVisible(false);
     }
+    bindInGameExitButton(this);
 
     this.physics.world.setBounds(0, 0, 220000, 1400);
     this.cameras.main.setBounds(0, 0, 220000, GAME_HEIGHT);
@@ -3781,6 +3803,7 @@ class DoraBossScene extends Phaser.Scene {
     setMobileUiBodyMode();
     setMobilePanelMode("platformer");
     setMobilePanelVisible(this.useMobileUi);
+    bindInGameExitButton(this);
 
     this.physics.world.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT + 220);
     this.cameras.main.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
@@ -5200,7 +5223,7 @@ class ResultScene extends Phaser.Scene {
 
 function connectSocket() {
   if (mp.socket) return mp.socket;
-  mp.socket = io(SERVER_URL, { transports: ["websocket"] });
+  mp.socket = io(SERVER_URL, { transports: ["polling", "websocket"] });
   return mp.socket;
 }
 
