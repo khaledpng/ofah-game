@@ -2427,6 +2427,7 @@ class GameScene extends Phaser.Scene {
     this.cameras.main.startFollow(this.player, true, 0.08, 0.08);
     this.cameraLookAhead = PORTRAIT ? -80 : 0;
     if (PORTRAIT) {
+      this.cameras.main.setZoom(0.75);
       this.cameras.main.setFollowOffset(this.cameraLookAhead, 0);
     }
 
@@ -3204,6 +3205,7 @@ class LolaChaseScene extends Phaser.Scene {
 
     this.cameras.main.startFollow(this.player, true, 0.08, 0.06);
     if (PORTRAIT) {
+      this.cameras.main.setZoom(0.75);
       this.cameras.main.setFollowOffset(-160, 0);
     }
 
@@ -3823,6 +3825,9 @@ class DoraBossScene extends Phaser.Scene {
     this.physics.world.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT + 220);
     this.cameras.main.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
     this.cameras.main.setBackgroundColor("#050106");
+    if (PORTRAIT) {
+      this.cameras.main.setZoom(0.75);
+    }
 
     const bg = this.add.image(GAME_WIDTH / 2, GAME_HEIGHT / 2, "dora_background").setDepth(-50);
     coverImage(bg, GAME_WIDTH, GAME_HEIGHT);
