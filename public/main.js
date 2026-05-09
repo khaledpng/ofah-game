@@ -2425,6 +2425,10 @@ class GameScene extends Phaser.Scene {
     );
 
     this.cameras.main.startFollow(this.player, true, 0.08, 0.08);
+    this.cameraLookAhead = PORTRAIT ? -80 : 0;
+    if (PORTRAIT) {
+      this.cameras.main.setFollowOffset(this.cameraLookAhead, 0);
+    }
 
     this.cursors = this.input.keyboard.createCursorKeys();
     this.jumpKey = this.input.keyboard.addKey(
@@ -2939,6 +2943,14 @@ class GameScene extends Phaser.Scene {
     this.bgNear.tilePositionX += BG_NEAR_SPEED;
     this.updateHud();
 
+    if (PORTRAIT) {
+      const movingRight = this.cursors.right.isDown || this.mobileMoveRight;
+      const movingLeft  = this.cursors.left.isDown  || this.mobileMoveLeft;
+      const targetLook  = movingRight ? -140 : movingLeft ? 30 : -70;
+      this.cameraLookAhead = Phaser.Math.Linear(this.cameraLookAhead, targetLook, 0.035);
+      this.cameras.main.setFollowOffset(this.cameraLookAhead, 0);
+    }
+
     if (this.player.x < 28) {
       this.player.x = 28;
       this.player.body.velocity.x = 0;
@@ -3191,6 +3203,9 @@ class LolaChaseScene extends Phaser.Scene {
     );
 
     this.cameras.main.startFollow(this.player, true, 0.08, 0.06);
+    if (PORTRAIT) {
+      this.cameras.main.setFollowOffset(-160, 0);
+    }
 
     this.jumpKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     this.input.keyboard.addCapture(["SPACE"]);
