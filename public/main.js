@@ -1,7 +1,7 @@
 const PORTRAIT = typeof window !== "undefined" && window.innerWidth < 640;
 const GAME_WIDTH = PORTRAIT ? 405 : 1280;
 const GAME_HEIGHT = 720;
-const SERVER_URL = "https://of-ah-2.up.railway.app";
+const SERVER_URL = typeof window !== "undefined" ? window.location.origin : "http://localhost:3001";
 
 const mp = {
   socket: null,
@@ -1887,12 +1887,12 @@ class StartScene extends Phaser.Scene {
       bottomFontSize: "96px",
     });
 
-    const previewShadow = this.add.ellipse(GAME_WIDTH / 2, 382, 160, 36, 0x000000, 0.34);
-    this.homePreview = this.add.image(GAME_WIDTH / 2, 240, this.selectedCharacterProfile.previewKey);
-    fitToHeight(this.homePreview, 380);
+    const previewShadow = this.add.ellipse(GAME_WIDTH / 2, 340, 140, 30, 0x000000, 0.34);
+    this.homePreview = this.add.image(GAME_WIDTH / 2, 210, this.selectedCharacterProfile.previewKey);
+    fitToHeight(this.homePreview, 290);
 
     this.homeCharacterNameText = this.add
-      .text(GAME_WIDTH / 2, 392, this.selectedCharacterProfile.character.name, {
+      .text(GAME_WIDTH / 2, 348, this.selectedCharacterProfile.character.name, {
         fontFamily: "Changa",
         fontSize: "26px",
         fontStyle: "bold",
@@ -1911,7 +1911,7 @@ class StartScene extends Phaser.Scene {
       ease: "Sine.inOut",
     });
 
-    this.createMenuButton(this.homeContainer, GAME_WIDTH / 2, 472, 320, 80, "ابدأ اللعبة", {
+    this.createMenuButton(this.homeContainer, GAME_WIDTH / 2, 440, 320, 80, "ابدأ اللعبة", {
       fillColor: 0x100313,
       strokeColor: 0xff1792,
       labelColor: "#ff46ae",
@@ -1923,7 +1923,7 @@ class StartScene extends Phaser.Scene {
       onPress: () => this.startSelectedGame("game"),
     });
 
-    this.createMenuButton(this.homeContainer, GAME_WIDTH / 2, 539, 320, 76, "🌐 اللعب الجماعي", {
+    this.createMenuButton(this.homeContainer, GAME_WIDTH / 2, 528, 320, 76, "🌐 اللعب الجماعي", {
       fillColor: 0x130925,
       strokeColor: 0x7e39db,
       labelColor: "#b366ff",
@@ -1935,7 +1935,7 @@ class StartScene extends Phaser.Scene {
       onPress: () => this.playOnline(),
     });
 
-    this.createMenuButton(this.homeContainer, GAME_WIDTH / 2, 632, 320, 76, "اختر شخصيتك", {
+    this.createMenuButton(this.homeContainer, GAME_WIDTH / 2, 616, 320, 76, "اختر شخصيتك", {
       fillColor: 0x090914,
       strokeColor: 0xf5f1ee,
       labelColor: "#f5f1ee",
