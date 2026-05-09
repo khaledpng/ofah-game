@@ -1,7 +1,7 @@
 const PORTRAIT = typeof window !== "undefined" && window.innerWidth < 640;
 const GAME_WIDTH = PORTRAIT ? 405 : 1280;
 const GAME_HEIGHT = 720;
-const SERVER_URL = typeof window !== "undefined" ? window.location.origin : "http://localhost:3001";
+const SERVER_URL = "https://of-ah-2.up.railway.app";
 
 const mp = {
   socket: null,
