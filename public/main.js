@@ -778,6 +778,15 @@ function armMusicUnlock(manager) {
   manager.unlockHandlers = { handler, eventNames };
 }
 
+function playDeathSound(scene, characterId) {
+  const key = characterId === "ofah" ? "hala_dies"
+             : characterId === "halhoola" ? "halhola_dies"
+             : null;
+  if (key && scene.sound.get(key)) {
+    scene.sound.play(key, { volume: 1.0 });
+  }
+}
+
 function playSceneMusic(scene, trackKey) {
   const audioContext = scene.sound?.context;
   if (!audioContext || !MUSIC_TRACKS[trackKey]) {
@@ -1671,6 +1680,13 @@ class BootScene extends Phaser.Scene {
     LOLA_RUN_KEYS.forEach(({ key, path }) => {
       this.load.image(key, path);
     });
+
+    this.load.audio("lola_music",     "assets/lola_music.m4a");
+    this.load.audio("dora_music",     "assets/dora_music.m4a");
+    this.load.audio("hala_selected",  "assets/hala_selected.m4a");
+    this.load.audio("ahmar_selected", "assets/ahmar_selected.wav");
+    this.load.audio("hala_dies",      "assets/hala_dies.m4a");
+    this.load.audio("halhola_dies",   "assets/halhola_dies.m4a");
   }
 
   create() {
@@ -2269,6 +2285,11 @@ class StartScene extends Phaser.Scene {
 
   selectCharacter(characterId) {
     this.selectedCharacterId = saveSelectedCharacterId(characterId);
+    if (characterId === "ofah" && this.sound.get("hala_selected")) {
+      this.sound.play("hala_selected", { volume: 1.0 });
+    } else if (characterId === "ahmar-alward" && this.sound.get("ahmar_selected")) {
+      this.sound.play("ahmar_selected", { volume: 1.0 });
+    }
     this.refreshStartSceneUi();
     this.setMenuMode("home");
   }
@@ -2902,6 +2923,10 @@ class GameScene extends Phaser.Scene {
       }
     }
 
+    if (!didWin) {
+      playDeathSound(this, this.characterProfile.character.id);
+    }
+
     if (didWin) {
       setPlayerTextureAtFixedHeight(
         this.playerVisual,
@@ -3041,7 +3066,11 @@ class LolaChaseScene extends Phaser.Scene {
   create(data = {}) {
     this.hasEnded = false;
     this.characterProfile = getCharacterProfile(data.selectedCharacterId);
-    playSceneMusic(this, "stage2");
+    stopMusicTrack(getMusicManager(this));
+    if (this.sound.get("lola_music")) this.sound.get("lola_music").destroy();
+    this.lolaMusic = this.sound.add("lola_music", { loop: true, volume: 0.7 });
+    this.lolaMusic.play();
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.lolaMusic?.stop());
     this.useMobileUi = shouldUseMobileUi();
     this.stageFloorY = 596;
     this.runnerStartX = 220;
@@ -3621,6 +3650,7 @@ class LolaChaseScene extends Phaser.Scene {
       mp.socket.emit("playerDied", { id: mp.myId });
     }
 
+    playDeathSound(this, this.characterProfile.character.id);
     playPlayerAnimationAtFixedHeight(
       this.playerVisual,
       this.characterProfile.cryAnimKey,
@@ -3797,7 +3827,11 @@ class DoraBossScene extends Phaser.Scene {
   create(data = {}) {
     this.hasEnded = false;
     this.characterProfile = getCharacterProfile(data.selectedCharacterId);
-    playSceneMusic(this, "stage3");
+    stopMusicTrack(getMusicManager(this));
+    if (this.sound.get("dora_music")) this.sound.get("dora_music").destroy();
+    this.doraMusic = this.sound.add("dora_music", { loop: true, volume: 0.7 });
+    this.doraMusic.play();
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.doraMusic?.stop());
     this.useMobileUi = shouldUseMobileUi();
     this.mobileMoveLeft = false;
     this.mobileMoveRight = false;
@@ -4890,7 +4924,11 @@ class DoraBossScene extends Phaser.Scene {
     this.physics.pause();
     this.detachBossMobileControls();
     this.player.setVelocity(0, 0);
-    
+
+    if (!didWin) {
+      playDeathSound(this, this.characterProfile.character.id);
+    }
+
     // Ensure floor is kept visible and not destroyed
     if (this.floor) {
       this.floor.setActive(true);
