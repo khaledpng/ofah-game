@@ -2284,7 +2284,7 @@ class StartScene extends Phaser.Scene {
       panel.setFillStyle(isSelected ? 0x12061b : 0x050814, 0.92);
       panel.setStrokeStyle(4, isSelected ? 0xff1792 : 0xf2f0ed, 0.98);
       inner.setFillStyle(isSelected ? 0x190a2a : 0x0a1129, isSelected ? 0.32 : 0.24);
-      fitToHeight(preview, 302);
+      fitToHeight(preview, PORTRAIT ? 155 : 302);
       preview.setAlpha(isSelected ? 1 : 0.94);
       if (isSelected) {
         preview.setScale(preview.scale * 1.02);
