@@ -783,7 +783,7 @@ function playDeathSound(scene, characterId) {
              : characterId === "halhoola" ? "halhola_dies"
              : null;
   if (key && scene.sound.get(key)) {
-    scene.sound.play(key, { volume: 1.0 });
+    scene.sound.play(key, { volume: 0.6 });
   }
 }
 
@@ -2286,9 +2286,9 @@ class StartScene extends Phaser.Scene {
   selectCharacter(characterId) {
     this.selectedCharacterId = saveSelectedCharacterId(characterId);
     if (characterId === "ofah" && this.sound.get("hala_selected")) {
-      this.sound.play("hala_selected", { volume: 1.0 });
+      this.sound.play("hala_selected", { volume: 0.6 });
     } else if (characterId === "ahmar-alward" && this.sound.get("ahmar_selected")) {
-      this.sound.play("ahmar_selected", { volume: 1.0 });
+      this.sound.play("ahmar_selected", { volume: 0.6 });
     }
     this.refreshStartSceneUi();
     this.setMenuMode("home");
@@ -3068,7 +3068,7 @@ class LolaChaseScene extends Phaser.Scene {
     this.characterProfile = getCharacterProfile(data.selectedCharacterId);
     stopMusicTrack(getMusicManager(this));
     if (this.sound.get("lola_music")) this.sound.get("lola_music").destroy();
-    this.lolaMusic = this.sound.add("lola_music", { loop: true, volume: 0.7 });
+    this.lolaMusic = this.sound.add("lola_music", { loop: true, volume: 0.6 });
     this.lolaMusic.play();
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.lolaMusic?.stop());
     this.useMobileUi = shouldUseMobileUi();
@@ -3829,7 +3829,7 @@ class DoraBossScene extends Phaser.Scene {
     this.characterProfile = getCharacterProfile(data.selectedCharacterId);
     stopMusicTrack(getMusicManager(this));
     if (this.sound.get("dora_music")) this.sound.get("dora_music").destroy();
-    this.doraMusic = this.sound.add("dora_music", { loop: true, volume: 0.7 });
+    this.doraMusic = this.sound.add("dora_music", { loop: true, volume: 0.6 });
     this.doraMusic.play();
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.doraMusic?.stop());
     this.useMobileUi = shouldUseMobileUi();
