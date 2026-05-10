@@ -130,9 +130,10 @@ body.mobile-ui-enabled {
 
 body.mobile-ui-enabled .game-shell {
   width: 100vw;
+  height: 100dvh;
   max-width: none;
   aspect-ratio: unset;
-  flex: 1 1 auto;
+  flex: none;
   min-height: 0;
   padding: 0;
   border-radius: 0;
@@ -150,7 +151,11 @@ body.mobile-ui-enabled #game {
 
 body.mobile-ui-enabled .mobile-play-panel.is-active {
   display: flex;
-  flex: 0 0 auto;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
   flex-direction: column;
   gap: 0;
   padding: 0 10px 14px;
